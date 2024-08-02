@@ -15,10 +15,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { createProject } from "@/Redux/Project/Action";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 
 const tags = [
+  "javascript",
+  "java",
   "react",
   "nextjs",
   "spring boot",
@@ -31,6 +35,8 @@ const tags = [
 ];
 
 function ProjectForm() {
+  const dispatch = useDispatch();
+
   const form = useForm({
     // resolver:
     defaultValues: {
@@ -42,7 +48,7 @@ function ProjectForm() {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    dispatch(createProject(data));
   };
 
   const handleTagsChange = (newValue) => {

@@ -12,13 +12,25 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchIssueById, updateIssueStatus } from "@/Redux/Issue/Action";
+import { fetchComments } from "@/Redux/Comment/Action";
 
 function IssueDetails() {
-  const { id, issueId } = useParams();
+  const { issueId } = useParams();
+  const dispatch = useDispatch();
+  const { issue, comment } = useSelector((store) => store);
 
   const handleUpdateValueChange = (status) => {
+    dispatch(updateIssueStatus({ issueId, status }));
     console.log(status);
   };
+
+  useEffect(() => {
+    dispatch(fetchIssueById(issueId));
+    dispatch(fetchComments(issueId));
+  }, [dispatch, issueId]);
 
   return (
     <div className="px-20 py-8 text-gray-400">
@@ -26,13 +38,13 @@ function IssueDetails() {
         <ScrollArea className="h-[80vh] w-[60%]">
           <div>
             <h1 className="text-lg font-semibold text-gray-400">
-              Create Navbar
+              {issue.issueDetails?.title}
             </h1>
 
             <div className="py-5">
               <h2 className="font-semibold text-gray-400">Description</h2>
               <p className="text-gray-400 text-sm mt-3">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                {issue.issueDetails?.description}
               </p>
             </div>
             <div className="mt-5 ">
@@ -50,8 +62,8 @@ function IssueDetails() {
                 <TabsContent value="comments">
                   <CreateCommentForm issueId={issueId} />
                   <div className="mt-8 space-y-6">
-                    {[1, 2, 3].map((item) => (
-                      <CommentCard key={item} />
+                    {comment?.comments?.map((item) => (
+                      <CommentCard key={item.id} comment={item} />
                     ))}
                   </div>
                 </TabsContent>
@@ -82,10 +94,18 @@ function IssueDetails() {
                 <div className="flex gap-10 items-center">
                   <p className="w-[7rem]">Assignee</p>
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8 text-xs">
-                      <AvatarFallback>R</AvatarFallback>
-                    </Avatar>
-                    <p>Code with Zosh</p>
+                    {issue.issueDetails?.assignee?.fullname ? (
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8 text-xs">
+                          <AvatarFallback>
+                            {issue.issueDetails?.assignee?.fullname[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p>{issue.issueDetails?.assignee?.fullname}</p>
+                      </div>
+                    ) : (
+                      <p>-</p>
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-10 items-center">
@@ -94,7 +114,7 @@ function IssueDetails() {
                 </div>
                 <div className="flex gap-10 items-center">
                   <p className="w-[7rem]">Status</p>
-                  <Badge>in-progress</Badge>
+                  <Badge> {issue.issueDetails?.status}</Badge>
                 </div>
                 <div className="flex gap-10 items-center">
                   <p className="w-[7rem]">Release</p>

@@ -12,45 +12,54 @@ import com.stripe.param.checkout.SessionCreateParams;
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
-  @Value("${stripe.secrect.key}")
-  private String secrectkey;
+  @Value("${stripe.secret.key}")
+  private String secretKey;
 
   @Override
-  public PaymentLinkResponse createPaymentLink(PlanType planType) throws Exception{
-
+  public PaymentLinkResponse createPaymentLink(PlanType planType) throws Exception {
 
     int amount = 799 * 100;
-    if (planType.equals(PlanType.ANNUALLY)) {
+    if (planType.equals(PlanType.ANNUAL)) {
         amount = amount * 12;
         amount = (int) (amount * 0.7);
     }
 
-    Stripe.apiKey = secrectkey;
-    SessionCreateParams params = SessionCreateParams.builder()
-          .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-          .setMode(SessionCreateParams.Mode.PAYMENT)
-          .setSuccessUrl("http://localhost:8080/upgrade_plan/success?planType=" + planType)
-          .setCancelUrl("http://localhost:8080/upgrade_plan/fail")
-          .addLineItem(SessionCreateParams.LineItem.builder()
-              .setQuantity(1L)
-              .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-                 .setCurrency("inr")
-                 .setUnitAmount((long) amount)
-                 .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                     .setName("Payment for plan: " + planType)
+    // Debug: Print the secret key (Remove this after debugging)
+    System.out.println("Stripe Secret Key: " + secretKey);
+
+    Stripe.apiKey = secretKey;
+
+    try {
+      SessionCreateParams params = SessionCreateParams.builder()
+            .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+            .setMode(SessionCreateParams.Mode.PAYMENT)
+            .setSuccessUrl("http://localhost:5173/upgrade_plan/success?planType=" + planType)
+            .setCancelUrl("http://localhost:8080/upgrade_plan/fail")
+            .addLineItem(SessionCreateParams.LineItem.builder()
+                .setQuantity(1L)
+                .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                   .setCurrency("inr")
+                   .setUnitAmount((long) amount)
+                   .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                       .setName("Payment for plan: " + planType)
+                          .build())
                         .build())
-                      .build())
-                  .build())
-              .build();
+                    .build())
+                .build();
 
-      Session session = Session.create(params);
+        Session session = Session.create(params);
 
-      PaymentLinkResponse paymentLinkResponse = new PaymentLinkResponse();
+        PaymentLinkResponse paymentLinkResponse = new PaymentLinkResponse();
+        paymentLinkResponse.setPaymentLinkURL(session.getUrl());
+        paymentLinkResponse.setPaymentLinkId(session.getId());
 
-      paymentLinkResponse.setPaymentLinkURL(session.getPaymentLink());
-      paymentLinkResponse.setPaymentLinkId(session.getId());
-    return paymentLinkResponse;
+        System.out.println("Response sent to frontend: " + paymentLinkResponse);
+
+        return paymentLinkResponse;
+    } catch (Exception e) {
+      // Debug: Print the exception message
+      System.out.println("Exception occurred: " + e.getMessage());
+      throw e;
+    }
   }
-
-
 }

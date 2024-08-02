@@ -11,9 +11,13 @@ import { RadioGroup } from "@radix-ui/react-radio-group";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { useState } from "react";
 import ProjectCard from "../Project/ProjectCard";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProjects, searchProjects } from "@/Redux/Project/Action";
 
 const tags = [
   "all",
+  "javascript",
+  "java",
   "react",
   "nextjs",
   "spring boot",
@@ -27,13 +31,22 @@ const tags = [
 
 function ProjectList() {
   const [keyword, setKeyword] = useState("");
+  const { project } = useSelector((store) => store);
+  const dispatch = useDispatch();
 
   const handleSearchChange = (e) => {
+    dispatch(searchProjects(e.target.value));
     setKeyword(e.target.value);
   };
 
-  const handleFilterChange = (section, value) => {
-    console.log(value, section);
+  const handleFilterTags = (value) => {
+    if (value === "all") value = null;
+    dispatch(fetchProjects({ tag: value }));
+  };
+
+  const handleFilterCategory = (value) => {
+    if (value === "all") value = null;
+    dispatch(fetchProjects({ category: value }));
   };
   return (
     <>
@@ -55,13 +68,11 @@ function ProjectList() {
                     <RadioGroup
                       className="space-y-3 pt-5"
                       defaultValue="All"
-                      onValueChange={(value) =>
-                        handleFilterChange("category", value)
-                      }
+                      onValueChange={(value) => handleFilterCategory(value)}
                     >
                       <div className="flex items-center gap-2">
                         <RadioGroupItem value="all" id="r1" />
-                        <Label htmlFor="r1"> All</Label>
+                        <Label htmlFor="r1">all</Label>
                       </div>
                       <div className="flex items-center gap-2">
                         <RadioGroupItem value="fullstack" id="r2" />
@@ -85,9 +96,7 @@ function ProjectList() {
                     <RadioGroup
                       className="space-y-3 pt-5"
                       defaultValue="All"
-                      onValueChange={(value) =>
-                        handleFilterChange("tag", value)
-                      }
+                      onValueChange={(value) => handleFilterTags(value)}
                     >
                       {tags.map((tag) => (
                         <div key={tag} className="flex items-center gap-2 ">
@@ -117,8 +126,12 @@ function ProjectList() {
           <div>
             <div className="space-y-5 min-h-[74vh]">
               {keyword
-                ? [1, 1, 1].map((item) => <ProjectCard key={item} />)
-                : [1, 1, 1, 1].map((item) => <ProjectCard key={item} />)}
+                ? project.searchProjects.map((item) => (
+                    <ProjectCard key={item.id} item={item} />
+                  ))
+                : project.projects.map((item) => (
+                    <ProjectCard key={item.id} item={item} />
+                  ))}
             </div>
           </div>
         </section>

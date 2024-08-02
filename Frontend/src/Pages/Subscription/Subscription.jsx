@@ -1,4 +1,7 @@
+import { useDispatch, useSelector } from "react-redux";
 import SubscriptionCard from "./SubscriptionCard";
+import { useEffect } from "react";
+import { getUserSubscription } from "@/Redux/subscription/Action";
 
 const paidPlan = [
   "Add unlimited project",
@@ -33,6 +36,11 @@ const freePlan = [
 ];
 
 function Subscription() {
+  const { subscription } = useSelector((store) => store);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUserSubscription());
+  }, []);
   return (
     <div className="p-10">
       <h1 className="text-5xl font-semibold py-5 pb-16 text-center">Pricing</h1>
@@ -43,7 +51,10 @@ function Subscription() {
             feature: freePlan,
             planType: "FREE",
             price: 0,
-            buttonName: true ? "Current Plan" : "Get Started",
+            buttonName:
+              subscription.userSubsription?.planType === "FREE"
+                ? "Current Plan"
+                : "Get Started",
           }}
         />
         <SubscriptionCard
@@ -52,7 +63,10 @@ function Subscription() {
             feature: paidPlan,
             planType: "MONTHLY",
             price: 799,
-            buttonName: false ? "Current Plan" : "Get Started",
+            buttonName:
+              subscription.userSubsription?.planType === "MONTHLY"
+                ? "Current Plan"
+                : "Get Started",
           }}
         />
         <SubscriptionCard
@@ -61,7 +75,10 @@ function Subscription() {
             feature: annualPlan,
             planType: "ANNUAL",
             price: 6711,
-            buttonName: true ? "Current Plan" : "Get Started",
+            buttonName:
+              subscription.userSubsription?.planType === "ANNUAL"
+                ? "Current Plan"
+                : "Get Started",
           }}
         />
       </div>

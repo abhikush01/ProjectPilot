@@ -8,9 +8,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createIssue } from "@/Redux/Issue/Action";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 
-function CreateIssueForm() {
+function CreateIssueForm({ status }) {
+  const dispatch = useDispatch();
+  const { id } = useParams();
   const form = useForm({
     // resolver:
     defaultValues: {
@@ -20,7 +25,14 @@ function CreateIssueForm() {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    dispatch(
+      createIssue({
+        title: data.issueName,
+        projectId: id,
+        description: data.description,
+        status: status,
+      })
+    );
   };
   return (
     <div>

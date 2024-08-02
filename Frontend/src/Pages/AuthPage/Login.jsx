@@ -7,9 +7,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { login } from "@/Redux/Auth/Action";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 
 function Login() {
+  const dispatch = useDispatch();
+
   const form = useForm({
     // resolver:
     defaultValues: {
@@ -19,7 +23,7 @@ function Login() {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    dispatch(login(data));
   };
   return (
     <div className="space-y-5">

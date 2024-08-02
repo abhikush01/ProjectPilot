@@ -7,20 +7,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { register } from "@/Redux/Auth/Action";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 
 function Signup() {
+  const dispatch = useDispatch();
   const form = useForm({
     // resolver:
     defaultValues: {
       email: "",
       password: "",
-      fullName: "",
+      fullname: "",
     },
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    dispatch(register(data));
   };
   return (
     <div className="space-y-5">
@@ -29,7 +32,7 @@ function Signup() {
         <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
-            name="fullName"
+            name="fullname"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -37,7 +40,7 @@ function Signup() {
                     {...field}
                     type="text"
                     className="border w-full border-gray-700 py-5 px-5"
-                    placeholder="fullName..."
+                    placeholder="fullname..."
                   />
                 </FormControl>
                 <FormMessage />
