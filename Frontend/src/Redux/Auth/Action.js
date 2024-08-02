@@ -11,7 +11,6 @@ import {
 import axios from "axios";
 
 export const register = (userData) => async (dispatch) => {
-  console.log(userData);
   dispatch({ type: REGISTER_REQUEST });
   try {
     const { data } = await axios.post(`${API_BASE_URL}/auth/signup`, userData);
@@ -19,7 +18,6 @@ export const register = (userData) => async (dispatch) => {
       localStorage.setItem("jwt", data.jwt);
       dispatch({ type: REGISTER_SUCCESS, payload: data });
     }
-    console.log("register success", data);
   } catch (e) {
     console.log(e);
   }
@@ -33,7 +31,6 @@ export const login = (userData) => async (dispatch) => {
       localStorage.setItem("jwt", data.jwt);
       dispatch({ type: LOGIN_SUCCESS, payload: data });
     }
-    console.log("login success", data);
   } catch (e) {
     console.log(e);
   }
@@ -47,8 +44,6 @@ export const getUser = () => async (dispatch) => {
     });
 
     dispatch({ type: GET_USER_SUCCESS, payload: data });
-
-    console.log("user success", data);
   } catch (e) {
     console.log(e);
   }

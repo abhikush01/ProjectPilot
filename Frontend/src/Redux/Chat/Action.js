@@ -10,7 +10,6 @@ export const sendMessage = (messageData) => {
         type: actionTypes.SEND_MESSAGE_SUCCESS,
         message: data,
       });
-      console.log("send Message", data);
     } catch (e) {
       console.log(e);
     }
@@ -26,6 +25,7 @@ export const fetchChatByProjectID = (projectId) => {
         type: actionTypes.FETCH_CHAT_BY_PROJECT_SUCCESS,
         chat: data,
       });
+      console.log(`Chat Data`, data);
     } catch (e) {
       console.log(e);
     }
@@ -43,6 +43,7 @@ export const fetchChatMessages = (chatId) => {
         chatId,
         messages: data,
       });
+      console.log("Messages", data);
     } catch (e) {
       console.log(e);
     }

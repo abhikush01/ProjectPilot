@@ -24,7 +24,7 @@ export const fetchProjects =
       const { data } = await api.get("/api/projects", {
         params: { category, tag },
       });
-      console.log("Fetch Projects", data);
+
       dispatch({ type: FETCH_PROJECT_SUCCESS, projects: data });
     } catch (e) {
       console.log(e);
@@ -35,7 +35,7 @@ export const searchProjects = (keyword) => async (dispatch) => {
   dispatch({ type: SEARCH_PROJECT_REQUEST });
   try {
     const { data } = await api.get("/api/projects/search?keyword=" + keyword);
-    console.log(data);
+
     dispatch({ type: SEARCH_PROJECT_SUCCESS, projects: data });
   } catch (e) {
     console.log(e);
@@ -46,7 +46,7 @@ export const createProject = (projectData) => async (dispatch) => {
   dispatch({ type: CREATE_PROJECT_REQUEST });
   try {
     const { data } = await api.post("/api/projects", projectData);
-    console.log("created Project", data);
+
     dispatch({ type: CREATE_PROJECT_SUCCESS, project: data });
   } catch (e) {
     console.log(e);
@@ -58,7 +58,7 @@ export const fetchProjectByID = (id) => async (dispatch) => {
 
   try {
     const { data } = await api.get("/api/projects/" + id);
-    console.log("Fetch by id", data);
+
     dispatch({ type: FETCH_PROJECT_BY_ID_SUCCESS, project: data });
   } catch (e) {
     console.log(e);
@@ -71,7 +71,7 @@ export const deleteProject =
     dispatch({ type: DELETE_PROJECT_REQUEST });
     try {
       await api.delete("/api/projects/" + projectId);
-      console.log("deleted");
+
       dispatch({ type: DELETE_PROJECT_SUCCESS, projectId });
     } catch (e) {
       console.log(e);
@@ -87,7 +87,7 @@ export const inviteToProject =
         email,
         projectId,
       });
-      console.log(data);
+
       dispatch({ type: INVITE_TO_PROJECT_SUCCESS, project: data });
     } catch (e) {
       console.log(e);
@@ -97,7 +97,6 @@ export const inviteToProject =
 export const acceptProject =
   ({ token, navigate }) =>
   async (dispatch) => {
-    console.log(token);
     dispatch({ type: ACCEPT_INVITATION_REQUEST });
     try {
       const { data } = await api.get("/api/projects/accept_invite", {
@@ -105,7 +104,7 @@ export const acceptProject =
           token,
         },
       });
-      console.log("Project data", data);
+
       dispatch({ type: ACCEPT_INVITATION_SUCCESS, project: data });
       navigate("/project/" + data.projectId);
     } catch (e) {

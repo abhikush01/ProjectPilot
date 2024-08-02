@@ -20,12 +20,17 @@ function ChatBox() {
 
   useEffect(() => {
     dispatch(fetchChatByProjectID(id));
-    console.log("useEffect", chat);
-  }, []);
+  }, [dispatch, id]);
 
   useEffect(() => {
-    dispatch(fetchChatMessages(chat?.chat?.id));
-  }, []);
+    if (chat?.chat?.id) {
+      const interval = setInterval(() => {
+        dispatch(fetchChatMessages(chat.chat.id));
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }
+  }, [dispatch, chat?.chat?.id]);
 
   const handleMessageChange = (e) => {
     setMessage(e.target.value);

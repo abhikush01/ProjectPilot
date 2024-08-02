@@ -30,7 +30,7 @@ export const updateIssueStatus = ({ issueId, status }) => {
     dispatch({ type: actionType.UPDATE_ISSUE_STATUS_REQUEST });
     try {
       const { data } = await api.put(`/api/issues/${issueId}/status/${status}`);
-      console.log("issueData", data);
+
       dispatch({ type: actionType.UPDATE_ISSUE_STATUS_SUCCESS, issues: data });
     } catch (e) {
       console.log(e);
@@ -73,7 +73,6 @@ export const createIssue = (issueData) => {
     try {
       const { data } = await api.post(`/api/issues`, issueData);
       dispatch({ type: actionType.CREATE_ISSUE_SUCCESS, issue: data });
-      console.log("issue created", data);
     } catch (e) {
       console.log(e);
     }

@@ -36,7 +36,6 @@ export const upgradeSubscription = ({ planType }) => {
         type: actionType.UPGRADE_SUBSCRIPTION_SUCCESS,
         payload: data,
       });
-      console.log("upgrade subscription", data);
     } catch (e) {
       console.log(e);
     }
